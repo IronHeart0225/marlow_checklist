@@ -1,0 +1,19 @@
+{
+  "personalCheckList": [
+    {
+      "title": "Supermarket",
+      "date": "06.12.22",
+      "lastItem": "Aftershave"
+    },
+    {
+      "title": "Restaurants to visit in France",
+      "date": "12.04.22",
+      "lastItem": "La Parfait"
+    },
+    {
+      "title": "Things to do in Germany",
+      "date": "06.09.22",
+      "lastItem": "Visit the park"
+    }
+  ]
+}
