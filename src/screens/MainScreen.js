@@ -8,13 +8,14 @@ import {
   useColorScheme,
   View,
   Image,
+  Pressable
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import PreDepartureChecklist from '../components/PreDepartureChecklist';
 import PersonalCheckList from '../components/PersonalChecklist';
 import DATA from '../config/mockdata.json';
 
-const MainScreen = () => {
+const MainScreen = (props) => {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
@@ -39,7 +40,9 @@ const MainScreen = () => {
           <Text style={styles.sectionTitle}>Pre-Departure Douments List</Text>
           <Text style={styles.sectionDescription}>List of all required documents for your upcoming assignment</Text>
           <View style={{ marginTop: 12 }}>
-            <PreDepartureChecklist percent={60} />
+            <Pressable onPress={() => props.navigation.navigate('PreDeparture')}>
+              <PreDepartureChecklist percent={60} />
+            </Pressable>
           </View>
         </View>
         <View style={styles.sectionContainer}>
