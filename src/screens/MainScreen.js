@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import {
   SafeAreaView,
   ScrollView,
@@ -13,24 +14,26 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import PreDepartureChecklist from '../components/PreDepartureChecklist';
 import PersonalCheckList from '../components/PersonalChecklist';
-import { getDocumentList } from '../services/checklist-service';
+import { getPreDepartureChecklist } from '../store/actions/documentActions';
+import * as TYPES from '../store/constants';
 import DATA from '../config/mockdata.json';
+import { getPercentage } from '../utils/percentage';
 
 const MainScreen = (props) => {
+  const { navigation, getPreDepartureChecklist, documents } = props;
   const isDarkMode = useColorScheme() === 'dark';
+  const [percentage, setPercentage] = useState(0);
 
   useEffect(() => {
-    loadPreDepartureCheckList();
+    getPreDepartureChecklist();
   }, []);
 
-  const loadPreDepartureCheckList = async () => {
-    try {
-      const res = await getDocumentList();
-      console.log(res);
-    } catch (error) {
-
+  useEffect(() => {
+    if (documents.type === TYPES.GET_DOCUMENT_LIST_SUCCESS && documents.document?.items) {
+      const { document } = documents;
+      setPercentage(getPercentage(document.percentage, document.items.length));
     }
-  }
+  }, [documents]);
 
   return (
     <SafeAreaView style={{ position: 'relative', height: '100%' }}>
@@ -54,8 +57,8 @@ const MainScreen = (props) => {
           <Text style={styles.sectionTitle}>Pre-Departure Douments List</Text>
           <Text style={styles.sectionDescription}>List of all required documents for your upcoming assignment</Text>
           <View style={{ marginTop: 12 }}>
-            <Pressable onPress={() => props.navigation.navigate('PreDeparture')}>
-              <PreDepartureChecklist percent={60} />
+            <Pressable onPress={() => navigation.navigate('PreDeparture')}>
+              <PreDepartureChecklist percent={percentage} />
             </Pressable>
           </View>
         </View>
@@ -132,4 +135,11 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MainScreen;
+const mapStateToProps = (state) => ({
+  documents: state.documents,
+});
+const mapDispatchToProps = {
+  getPreDepartureChecklist,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainScreen);

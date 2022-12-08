@@ -38,16 +38,18 @@ const createRandomDocument = () => {
 }
 
 mock.onGet('/api/document_list').reply((config) => {
+  let items = [];
+  Array.from({ length: 15 }).forEach(() => {
+    items.push(createRandomDocument());
+  });
+
   const data = {
     id: faker.datatype.uuid(),
     status: 'Archive',
-    items: [],
-    percentage: 0,
+    items,
+    percentage: items.reduce((total, item) => total + (item.status === 'Done'), 0),
   };
 
-  Array.from({ length: 3 }).forEach(() => {
-    data.items.push(createRandomDocument());
-  })
   return [200, data];
 });
 

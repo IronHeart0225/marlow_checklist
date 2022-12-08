@@ -18,7 +18,7 @@ const PreDepartureChecklist = (props) => {
           onAnimationComplete={() => console.log('onAnimationComplete')}
           backgroundColor="#fff">
           {(fill) => (
-            <Text style={styles.percent}>{fill}%</Text>
+            <Text style={styles.percent}>{fill.toFixed(0)}%</Text>
           )}
         </AnimatedCircularProgress>
         <Text style={styles.title}>Review List</Text>
