@@ -29,9 +29,9 @@ const MainScreen = (props) => {
   }, []);
 
   useEffect(() => {
-    if (documents.type === TYPES.GET_DOCUMENT_LIST_SUCCESS && documents.document?.items) {
+    if (documents.type === TYPES.GET_DOCUMENT_LIST_SUCCESS) {
       const { document } = documents;
-      setPercentage(getPercentage(document.percentage, document.items.length));
+      setPercentage(getPercentage(document.percentage, document.total));
     }
   }, [documents]);
 
@@ -86,14 +86,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
-    paddingHorizontal: 16,
+    paddingHorizontal: 6,
     paddingVertical: 16,
     backgroundColor: '#eceef0',
   },
   pageBack: {
     position: 'absolute',
-    left: 16,
+    left: 6,
     top: 14,
+    zIndex: 10,
   },
   pageTitle: {
     width: '100%',
@@ -141,5 +142,4 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getPreDepartureChecklist,
 }
-
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen);

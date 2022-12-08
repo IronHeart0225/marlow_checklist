@@ -3,54 +3,94 @@ import {
   View,
   StyleSheet,
   Text,
-  FlatList,
-  Animated,
   ScrollView,
   Dimensions
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import AntIcon from 'react-native-vector-icons/AntDesign';
+import IonIcon from 'react-native-vector-icons/Ionicons';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
 const PreDepartureItem = (props) => {
+  const { categoryId, status, docName, docNumber, nation, optional, issueDate, expiryDate } = props;
+
+  const renderDocumentIcon = () => {
+    if (status === 'Pending') {
+      if (categoryId === 0) {
+        return <FeatherIcon name="alert-circle" color="#cb3c47" size={20} />
+      } else {
+        return (
+          <View style={{
+            width: 20,
+            height: 20,
+            borderRadius: 10,
+            backgroundColor: "#005AA5",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+            <IonIcon name="document-text" color="#ffffff" size={10} />
+          </View>
+        );
+      }
+    } else if (status === 'Done') {
+      return <IonIcon name="checkmark-circle" color="#005AA5" size={20} />
+    } else if (status === 'Skip') {
+      return <IonIcon name="remove-circle" color="#005AA5" size={20} />
+    }
+    return <></>;
+  }
+
+  const renderSwipeButton = (name) => {
+    const icon = name === 'Done' || name === 'Submitted' ? 'check-circle'
+      : name === 'Skip' ? 'minus-circle'
+        : name === 'Uncheck' ? 'circle'
+          : '';
+    const bgColor = name === 'Submitted' || name === 'Skip' ? '#002646' : '#4F9B90';
+    return (
+      <View style={{ width: 80, height: 88, backgroundColor: bgColor, flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <FeatherIcon name={icon} color={"#ffffff"} size={24} />
+        <Text style={styles.swipeText}>{name}</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={{ width: "100%", height: 88 }} showsHorizontalScrollIndicator={false} horizontal>
       <View style={[styles.itemContainer, { width: Dimensions.get('window').width - 32 }]}>
-        <View style={{
-          width: 20,
-          height: 20,
-          borderRadius: 10,
-          backgroundColor: "#005AA5",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          marginRight: 17
-        }}>
-          <Icon name="document-text" color={"#ffffff"} size={10} />
-        </View>
-        <View style={{ flex: 1 }}>
+        {renderDocumentIcon()}
+        <View style={{ flex: 1, marginLeft: 17 }}>
           <View style={styles.infoView}>
             <View>
-              <Text style={styles.titleText}>GMDSS GOC</Text>
-              <Text style={styles.titleText}>RUS, 6533/5563</Text>
+              <Text style={styles.titleText}>{docName}</Text>
+              <Text style={styles.titleText}>{nation}, {docNumber}</Text>
             </View>
-            <Text style={styles.descText}>(Optional)</Text>
+            {optional && (
+              <Text style={styles.descText}>(Optional)</Text>
+            )}
           </View>
           <View style={[styles.infoView, { marginTop: 7 }]}>
-            <Text style={styles.descText}>Issue date: N/A</Text>
-            <Text style={styles.descText}>Exp. date: N/A</Text>
+            <Text style={styles.descText}>Issue date: {issueDate}</Text>
+            <Text style={styles.descText}>Exp. date: {expiryDate}</Text>
           </View>
         </View>
       </View>
-      <View style={{ flexDirection: "row", marginLeft: 16 }}>
-        <View style={{ width: 80, height: 88, backgroundColor: "#4F9B90", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <AntIcon name="checkcircleo" color={"#ffffff"} size={24} />
-          <Text style={styles.doneText}>Done</Text>
+      {status === 'Done' || status === 'Skip' ? (
+        <View style={{ flexDirection: "row", marginLeft: 16 }}>
+          {renderSwipeButton('Uncheck')}
         </View>
-        <View style={{ width: 80, height: 88, backgroundColor: "#002646", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <AntIcon name="minuscircleo" color={"#ffffff"} size={24} />
-          <Text style={styles.doneText}>Skip</Text>
+      ) : categoryId === 0 ? (
+        <View style={{ flexDirection: "row", marginLeft: 16 }}>
+          {renderSwipeButton('Submitted')}
         </View>
-      </View>
+      ) : categoryId === 1 ? (
+        <View style={{ flexDirection: "row", marginLeft: 16 }}>
+          {renderSwipeButton('Done')}
+          {renderSwipeButton('Skip')}
+        </View>
+      ) : (
+        <View style={{ flexDirection: "row", marginLeft: 16 }}>
+          {renderSwipeButton('Done')}
+        </View>
+      )}
     </ScrollView>
   )
 };
@@ -81,7 +121,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     color: "#707070"
   },
-  doneText: {
+  swipeText: {
     fontFamily: "Roboto-Regular",
     color: "white",
     fontSize: 12,

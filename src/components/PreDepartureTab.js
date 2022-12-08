@@ -6,21 +6,19 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
-const PreDepartureTap = ({
-  isAlert = false,
-  title = "",
-  currentTap,
-}) => {
+const PreDepartureTab = (props) => {
+  const { isAlert = false, title = '', currentTab } = props;
+
   return (
     <View style={{
       flexDirection: "row",
       alignItems: "center",
       paddingBottom: 5,
-      borderBottomWidth: currentTap == title ? 2 : 0,
+      borderBottomWidth: currentTab == title ? 2 : 0,
       borderBottomColor: "#005AA5"
     }}>
-      { isAlert && <Icon style={{ marginRight: 4 }} name='alert-circle' color={"#CB3C47"} size={12} />}
-      <Text style={ currentTap == title ? styles.titleStyle : styles.unvisibleTitle}>{ title }</Text>
+      {isAlert && <Icon style={{ marginRight: 4 }} name='alert-circle' color={"#CB3C47"} size={12} />}
+      <Text style={ currentTab == title ? styles.titleStyle : styles.unvisibleTitle}>{ title }</Text>
     </View>
   )
 }
@@ -40,4 +38,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default PreDepartureTap;
+export default PreDepartureTab;

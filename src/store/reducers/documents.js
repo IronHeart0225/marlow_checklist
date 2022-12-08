@@ -11,7 +11,10 @@ export const documents = (state = {}, action) => {
       return {
         ...state,
         type: action.type,
-        document: action.data,
+        document: {
+          ...action.data,
+          total: action.data.items?.length ?? 0,
+        }
       }
     default:
       return state;

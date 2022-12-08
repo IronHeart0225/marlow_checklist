@@ -7,9 +7,9 @@ const mock = new MockAdapter(axios, { delayResponse: 0 });
 const createRandomDocument = () => {
   const categoryId = faker.helpers.arrayElement([0, 1, 2]);
   const CATEGORY_NAMES = [
-    'Mandatory',
     'Attention',
     'Optional',
+    'Mandatory',
   ];
   const DOCUMENT_STATUS = [
     'Pending',
@@ -24,7 +24,7 @@ const createRandomDocument = () => {
       description: faker.random.words(2),
       documentNumber: `${faker.random.numeric(4)}/${faker.random.numeric(4)}`,
       issueDate: faker.date.recent(30),
-      unlimited: true,
+      unlimited: faker.datatype.boolean(),
       categoryName: CATEGORY_NAMES[categoryId],
       categoryId,
       documentId: 0,
@@ -32,7 +32,7 @@ const createRandomDocument = () => {
       nation: faker.address.countryCode('alpha-3'),
       counter: 0,
       followUp: true,
-      optional: true,
+      optional: categoryId === 1,
     },
   };
 }
@@ -47,7 +47,7 @@ mock.onGet('/api/document_list').reply((config) => {
     id: faker.datatype.uuid(),
     status: 'Archive',
     items,
-    percentage: items.reduce((total, item) => total + (item.status === 'Done'), 0),
+    percentage: items.reduce((total, item) => total + (item.status !== 'Pending'), 0),
   };
 
   return [200, data];
