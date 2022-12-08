@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -8,15 +8,29 @@ import {
   useColorScheme,
   View,
   Image,
-  Pressable
+  Pressable,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import PreDepartureChecklist from '../components/PreDepartureChecklist';
 import PersonalCheckList from '../components/PersonalChecklist';
+import { getDocumentList } from '../services/checklist-service';
 import DATA from '../config/mockdata.json';
 
 const MainScreen = (props) => {
   const isDarkMode = useColorScheme() === 'dark';
+
+  useEffect(() => {
+    loadPreDepartureCheckList();
+  }, []);
+
+  const loadPreDepartureCheckList = async () => {
+    try {
+      const res = await getDocumentList();
+      console.log(res);
+    } catch (error) {
+
+    }
+  }
 
   return (
     <SafeAreaView style={{ position: 'relative', height: '100%' }}>
