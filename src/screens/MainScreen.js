@@ -29,7 +29,7 @@ const MainScreen = (props) => {
   }, []);
 
   useEffect(() => {
-    if (documents.items.length > 0) {
+    if (documents.document?.items?.length > 0) {
       const { document } = documents;
       setPercentage(getPercentage(document.percentage, document.total));
     }
