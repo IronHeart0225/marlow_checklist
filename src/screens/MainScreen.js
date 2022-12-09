@@ -29,7 +29,7 @@ const MainScreen = (props) => {
   }, []);
 
   useEffect(() => {
-    if (documents.type === TYPES.GET_DOCUMENT_LIST_SUCCESS) {
+    if (documents.items.length > 0) {
       const { document } = documents;
       setPercentage(getPercentage(document.percentage, document.total));
     }

@@ -5,15 +5,17 @@ export const getDocumentList = async () => {
     const res = await axiosInstance.get('/document_list');
     return res.data;
   } catch (error) {
-    return 'Error while retriving the data from the api';
+    return error;
   }
 };
 
 export const setDocumentStatus = async (status) => {
   try {
-    const res = await axiosInstance.post('/document_status', { status });
-    return res.data;
+    /** ignore status in mock api */
+    const res = await axiosInstance.post('/document_status', { status: 'Done' });
+    const { status, data } = res;
+    return { code: status, data };
   } catch (error) {
-    return 'Error while retriving the data from the api';
+    return error;
   }
 }

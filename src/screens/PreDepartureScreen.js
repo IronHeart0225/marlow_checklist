@@ -27,7 +27,7 @@ const PreDepartureScreen = (props) => {
   const [completedItems, setCompletedItems] = useState([]);
 
   useEffect(() => {
-    if (documents.type === TYPES.GET_DOCUMENT_LIST_SUCCESS) {
+    if (documents.document?.items?.length > 0) {
       const { document } = documents;
       setPendingItems(
         document.items.filter(item => item.status === 'Pending')
@@ -94,11 +94,14 @@ const PreDepartureScreen = (props) => {
         <View style={{ width: "100%", paddingTop: 22 }}>
           <Text style={styles.sectionTitle}>Pending</Text>
           <View style={styles.sectionContent}>
-            {pendingItems.length > 0 && pendingItems.map(item => (
+            {pendingItems.length === 0 ? (
+              <Text style={styles.emptyText}>No pending documents</Text>
+            ) : pendingItems.map(item => (
               <PreDepartureItem
                 key={item.id}
-                categoryId={item.documentInfo.categoryId}
+                id={item.id}
                 status={item.status}
+                categoryId={item.documentInfo.categoryId}
                 docName={item.documentInfo.description}
                 docNumber={item.documentInfo.documentNumber}
                 nation={item.documentInfo.nation}
@@ -112,11 +115,14 @@ const PreDepartureScreen = (props) => {
         <View style={{ width: "100%", paddingTop: 22 }}>
           <Text style={styles.sectionTitle}>Completed</Text>
           <View style={styles.sectionContent}>
-            {completedItems.length > 0 && completedItems.map(item => (
+            {completedItems.length === 0 ? (
+              <Text style={styles.emptyText}>No completed documents</Text>
+            ) : completedItems.map(item => (
               <PreDepartureItem
                 key={item.id}
-                categoryId={item.documentInfo.categoryId}
+                id={item.id}
                 status={item.status}
+                categoryId={item.documentInfo.categoryId}
                 docName={item.documentInfo.description}
                 docNumber={item.documentInfo.documentNumber}
                 nation={item.documentInfo.nation}
@@ -184,6 +190,13 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     marginLeft: 11,
     marginRight: 3
+  },
+  emptyText: {
+    fontSize: 12,
+    lineHeight: 16,
+    color: 'black',
+    marginLeft: 11,
+    marginTop: 10,
   },
   sectionTitle: {
     fontSize: 14,

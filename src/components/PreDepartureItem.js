@@ -1,6 +1,8 @@
 import React from "react";
+import { connect } from 'react-redux';
 import {
   View,
+  Pressable,
   StyleSheet,
   Text,
   ScrollView,
@@ -8,9 +10,21 @@ import {
 } from 'react-native';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import { setPreDepartureDocumentStatus } from '../store/actions/documentActions';
 
 const PreDepartureItem = (props) => {
-  const { categoryId, status, docName, docNumber, nation, optional, issueDate, expiryDate } = props;
+  const {
+    id,
+    status,
+    categoryId,
+    docName,
+    docNumber,
+    nation,
+    optional,
+    issueDate,
+    expiryDate,
+    setPreDepartureDocumentStatus,
+  } = props;
 
   const renderDocumentIcon = () => {
     if (status === 'Pending') {
@@ -39,6 +53,15 @@ const PreDepartureItem = (props) => {
     return <></>;
   }
 
+  const handleDocument = async (name) => {
+    const status = name === 'Done' || name === 'Skip' ? name : 'Pending';
+    console.log(name);
+    const res = await setPreDepartureDocumentStatus(id, status);
+    if (res.code !== 200) {
+      console.log(res);
+    }
+  }
+
   const renderSwipeButton = (name) => {
     const icon = name === 'Done' || name === 'Submitted' ? 'check-circle'
       : name === 'Skip' ? 'minus-circle'
@@ -46,10 +69,13 @@ const PreDepartureItem = (props) => {
           : '';
     const bgColor = name === 'Submitted' || name === 'Skip' ? '#002646' : '#4F9B90';
     return (
-      <View style={{ width: 80, height: 88, backgroundColor: bgColor, flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+      <Pressable
+        style={[styles.swipeButton, { backgroundColor: bgColor }]}
+        onPress={() => handleDocument(name)}
+      >
         <FeatherIcon name={icon} color={"#ffffff"} size={24} />
         <Text style={styles.swipeText}>{name}</Text>
-      </View>
+      </Pressable>
     );
   }
 
@@ -121,12 +147,22 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     color: "#707070"
   },
+  swipeButton: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 80,
+    height: 88,
+  },
   swipeText: {
     fontFamily: "Roboto-Regular",
     color: "white",
     fontSize: 12,
     lineHeight: 21
-  }
+  },
 });
 
-export default PreDepartureItem;
+const mapDispatchToProps = {
+  setPreDepartureDocumentStatus,
+}
+export default connect(null, mapDispatchToProps)(PreDepartureItem);

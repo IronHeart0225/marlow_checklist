@@ -55,7 +55,7 @@ mock.onGet('/api/document_list').reply((config) => {
 
 mock.onPost('/api/document_status', { status: 'Done' }).reply((config) => {
   if (Math.random() > 0.95) {
-    return [400, { message: 'Error message' }];
+    return [400, { message: 'Update failed' }];
   }
 
   return [200, { data: 'Successfully updated' }];

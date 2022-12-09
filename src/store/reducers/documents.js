@@ -12,9 +12,20 @@ export const documents = (state = {}, action) => {
         ...state,
         type: action.type,
         document: {
-          ...action.data,
-          total: action.data.items?.length ?? 0,
+          ...action.payload,
+          total: action.payload.items?.length ?? 0,
         }
+      }
+    case TYPES.SET_DOCUMENT_STATUS:
+      const { document } = state;
+      const { items } = document;
+      const newItems = items.map(item => 
+        item.id === action.payload.id ? { ...item, status: action.payload.status } : item);
+      const percentage = newItems.reduce((total, item) => total + (item.status !== 'Pending'), 0);
+      return {
+        ...state,
+        type: action.type,
+        document: { ...document, items: newItems, percentage },
       }
     default:
       return state;

@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   percent: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '700',
     color: 'black',
   },
