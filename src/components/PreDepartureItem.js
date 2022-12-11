@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from 'react-redux';
 import {
   View,
-  Pressable,
+  TouchableOpacity,
   StyleSheet,
   Text,
   ScrollView,
@@ -69,13 +69,13 @@ const PreDepartureItem = (props) => {
           : '';
     const bgColor = name === 'Submitted' || name === 'Skip' ? '#002646' : '#4F9B90';
     return (
-      <Pressable
+      <TouchableOpacity
         style={[styles.swipeButton, { backgroundColor: bgColor }]}
         onPress={() => handleDocument(name)}
       >
         <FeatherIcon name={icon} color={"#ffffff"} size={24} />
         <Text style={styles.swipeText}>{name}</Text>
-      </Pressable>
+      </TouchableOpacity>
     );
   }
 

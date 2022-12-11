@@ -10,6 +10,7 @@ import {
   View,
   Image,
   Pressable,
+  TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import PreDepartureChecklist from '../components/PreDepartureChecklist';
@@ -18,11 +19,13 @@ import { getPreDepartureChecklist } from '../store/actions/documentActions';
 import * as TYPES from '../store/constants';
 import DATA from '../config/mockdata.json';
 import { getPercentage } from '../utils/percentage';
+import AddModal from '../components/AddModal';
 
 const MainScreen = (props) => {
   const { navigation, getPreDepartureChecklist, documents } = props;
   const isDarkMode = useColorScheme() === 'dark';
   const [percentage, setPercentage] = useState(0);
+  const [showModal, SetShowModal] = useState(false);
 
   useEffect(() => {
     getPreDepartureChecklist();
@@ -35,6 +38,11 @@ const MainScreen = (props) => {
     }
   }, [documents]);
 
+  const onClickDone = (title) => {
+    SetShowModal(false);
+    props.navigation.navigate('SaveList', { title: title });
+  }
+
   return (
     <SafeAreaView style={{ position: 'relative', height: '100%' }}>
       <StatusBar
@@ -45,10 +53,11 @@ const MainScreen = (props) => {
         <Icon name="chevron-left" color={'#000'} size={28} style={styles.pageBack} />
         <Text style={styles.pageTitle}>Checklists</Text>
       </View>
-      <Image
-        source={require('../assets/images/add_icon.png')}
-        style={styles.addButton}
-      />
+      <TouchableOpacity style={styles.addButton} onPress={() => SetShowModal(true)}>
+        <Image
+          source={require('../assets/images/add_icon.png')}
+        />
+      </TouchableOpacity>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={{ backgroundColor: "#eceef0" }}
@@ -77,6 +86,13 @@ const MainScreen = (props) => {
           </View>
         </View>
       </ScrollView>
+      {
+        showModal &&
+        <AddModal
+          setShowModal={(val) => SetShowModal(val)}
+          onClickDone={(val) => onClickDone(val)}
+        />
+      }
     </SafeAreaView>
   );
 };
