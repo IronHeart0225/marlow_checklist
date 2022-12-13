@@ -13,18 +13,18 @@ import {
   TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { faker } from '@faker-js/faker';
 import PreDepartureChecklist from '../components/PreDepartureChecklist';
 import PersonalCheckList from '../components/PersonalChecklist';
 import { getPreDepartureChecklist } from '../store/actions/documentActions';
-import DATA from '../config/mockdata.json';
 import { getPercentage } from '../utils/percentage';
 import AddModal from '../components/AddModal';
 
 const MainScreen = (props) => {
-  const { navigation, getPreDepartureChecklist, documents } = props;
+  const { navigation, getPreDepartureChecklist, documents, myChecklist } = props;
   const isDarkMode = useColorScheme() === 'dark';
   const [percentage, setPercentage] = useState(0);
-  const [showModal, SetShowModal] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     getPreDepartureChecklist();
@@ -37,9 +37,16 @@ const MainScreen = (props) => {
     }
   }, [documents]);
 
-  const onClickDone = (title) => {
-    SetShowModal(false);
-    props.navigation.navigate('SaveList', { title: title });
+  const addPersonalChecklist = (title) => {
+    setOpenModal(false);
+    navigation.navigate('MyChecklistEdit', {
+      id: faker.datatype.uuid(),
+      title,
+    });
+  }
+
+  const editPersonalChecklist = (id, title) => {
+    navigation.navigate('MyChecklistEdit', { id, title });
   }
 
   return (
@@ -52,7 +59,7 @@ const MainScreen = (props) => {
         <Icon name="chevron-left" color={'#000'} size={28} style={styles.pageBack} />
         <Text style={styles.pageTitle}>Checklists</Text>
       </View>
-      <TouchableOpacity style={styles.addButton} onPress={() => SetShowModal(true)}>
+      <TouchableOpacity style={styles.addButton} onPress={() => setOpenModal(true)}>
         <Image
           source={require('../assets/images/add_icon.png')}
         />
@@ -74,24 +81,27 @@ const MainScreen = (props) => {
           <Text style={styles.sectionTitle}>My Checklist</Text>
           <Text style={styles.sectionDescription}>Create your own personal checklist</Text>
           <View style={styles.sectionContent}>
-            {DATA?.personalCheckList && DATA.personalCheckList.map((item, idx) => (
-              <PersonalCheckList
-                key={`personal-${idx}`}
-                title={item.title}
-                date={item.date}
-                lastItem={item.lastItem}
-              />
+            {myChecklist.length > 0 && myChecklist.map(item => (
+              <Pressable
+                key={item.id}
+                onPress={() => editPersonalChecklist(item.id, item.title)}
+              >
+                <PersonalCheckList
+                  title={item.title}
+                  date={item.created}
+                  lastItem={item.items[item.items.length - 1].title}
+                />
+              </Pressable>
             ))}
           </View>
         </View>
       </ScrollView>
-      {
-        showModal &&
+      {openModal && (
         <AddModal
-          setShowModal={(val) => SetShowModal(val)}
-          onClickDone={(val) => onClickDone(val)}
+          setShowModal={setOpenModal}
+          onClickDone={(val) => addPersonalChecklist(val)}
         />
-      }
+      )}
     </SafeAreaView>
   );
 };
@@ -153,6 +163,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   documents: state.documents,
+  myChecklist: state.myChecklist,
 });
 const mapDispatchToProps = {
   getPreDepartureChecklist,
