@@ -16,19 +16,19 @@ const PreDepartureItem = (props) => {
   const {
     id,
     status,
-    categoryId,
     docName,
     docNumber,
     nation,
     optional,
+    followUp,
     issueDate,
     expiryDate,
     setPreDepartureDocumentStatus,
   } = props;
 
   const renderDocumentIcon = () => {
-    if (status === 'Pending') {
-      if (categoryId === 0) {
+    if (status === 'Active') {
+      if (followUp) {
         return <FeatherIcon name="alert-circle" color="#cb3c47" size={20} />
       } else {
         return (
@@ -45,24 +45,22 @@ const PreDepartureItem = (props) => {
           </View>
         );
       }
-    } else if (status === 'Done') {
+    } else if (status === 'Done' || status === 'Submitted') {
       return <IonIcon name="checkmark-circle" color="#005AA5" size={20} />
-    } else if (status === 'Skip') {
+    } else if (status === 'Skipped') {
       return <IonIcon name="remove-circle" color="#005AA5" size={20} />
     }
     return <></>;
   }
 
-  const handleDocument = async (name) => {
-    const status = name === 'Done' || name === 'Skip' ? name : 'Pending';
-    console.log(name);
+  const handleDocument = async (status) => {
     const res = await setPreDepartureDocumentStatus(id, status);
     if (res.code !== 200) {
       console.log(res);
     }
   }
 
-  const renderSwipeButton = (name) => {
+  const renderSwipeButton = (name, status) => {
     const icon = name === 'Done' || name === 'Submitted' ? 'check-circle'
       : name === 'Skip' ? 'minus-circle'
         : name === 'Uncheck' ? 'circle'
@@ -71,7 +69,7 @@ const PreDepartureItem = (props) => {
     return (
       <TouchableOpacity
         style={[styles.swipeButton, { backgroundColor: bgColor }]}
-        onPress={() => handleDocument(name)}
+        onPress={() => handleDocument(status)}
       >
         <FeatherIcon name={icon} color={"#ffffff"} size={24} />
         <Text style={styles.swipeText}>{name}</Text>
@@ -99,22 +97,22 @@ const PreDepartureItem = (props) => {
           </View>
         </View>
       </View>
-      {status === 'Done' || status === 'Skip' ? (
+      {status === 'Done' || status === 'Skipped' || status === 'Submitted' ? (
         <View style={{ flexDirection: "row", marginLeft: 16 }}>
-          {renderSwipeButton('Uncheck')}
+          {renderSwipeButton('Uncheck', 'Active')}
         </View>
-      ) : categoryId === 0 ? (
+      ) : followUp ? (
         <View style={{ flexDirection: "row", marginLeft: 16 }}>
-          {renderSwipeButton('Submitted')}
+          {renderSwipeButton('Submitted', 'Submitted')}
         </View>
-      ) : categoryId === 1 ? (
+      ) : optional ? (
         <View style={{ flexDirection: "row", marginLeft: 16 }}>
-          {renderSwipeButton('Done')}
-          {renderSwipeButton('Skip')}
+          {renderSwipeButton('Done', 'Done')}
+          {renderSwipeButton('Skip', 'Skipped')}
         </View>
       ) : (
         <View style={{ flexDirection: "row", marginLeft: 16 }}>
-          {renderSwipeButton('Done')}
+          {renderSwipeButton('Done', 'Done')}
         </View>
       )}
     </ScrollView>

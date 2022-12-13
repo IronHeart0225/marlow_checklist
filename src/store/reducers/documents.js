@@ -21,7 +21,7 @@ export const documents = (state = {}, action) => {
       const { items } = document;
       const newItems = items.map(item => 
         item.id === action.payload.id ? { ...item, status: action.payload.status } : item);
-      const percentage = newItems.reduce((total, item) => total + (item.status !== 'Pending'), 0);
+      const percentage = newItems.reduce((total, item) => total + (item.status !== 'Active'), 0);
       return {
         ...state,
         type: action.type,

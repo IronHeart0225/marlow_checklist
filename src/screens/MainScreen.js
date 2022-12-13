@@ -16,7 +16,6 @@ import Icon from 'react-native-vector-icons/Feather';
 import PreDepartureChecklist from '../components/PreDepartureChecklist';
 import PersonalCheckList from '../components/PersonalChecklist';
 import { getPreDepartureChecklist } from '../store/actions/documentActions';
-import * as TYPES from '../store/constants';
 import DATA from '../config/mockdata.json';
 import { getPercentage } from '../utils/percentage';
 import AddModal from '../components/AddModal';

@@ -15,13 +15,13 @@ import Icon from 'react-native-vector-icons/Feather';
 import SimpleGradientProgressbarView from "react-native-simple-gradient-progressbar-view";
 import PreDepartureTab from '../components/PreDepartureTab';
 import PreDepartureItem from '../components/PreDepartureItem';
-import * as TYPES from '../store/constants';
 import { getPercentage } from '../utils/percentage';
+import { CATEGORY_NAMES } from '../config/config';
 
 const PreDepartureScreen = (props) => {
   const { navigation, documents } = props;
   const isDarkMode = useColorScheme() === 'dark';
-  const [currentTab, setCurrentTab] = useState("STCW National");
+  const [currentTab, setCurrentTab] = useState(0);
   const [percentage, setPercentage] = useState(0);
   const [pendingItems, setPendingItems] = useState([]);
   const [completedItems, setCompletedItems] = useState([]);
@@ -29,17 +29,21 @@ const PreDepartureScreen = (props) => {
   useEffect(() => {
     if (documents.document?.items?.length > 0) {
       const { document } = documents;
+      const categoryDocs = document.items.filter(item => item.documentInfo.categoryId === currentTab);
+      const completedDocs = categoryDocs.filter(item => item.status !== 'Active');
       setPendingItems(
-        document.items.filter(item => item.status === 'Pending')
-          .sort((a, b) => a.documentInfo.categoryId - b.documentInfo.categoryId)
+        categoryDocs.filter(item => item.status === 'Active')
       );
-      setCompletedItems(
-        document.items.filter(item => item.status !== 'Pending')
-          .sort((a, b) => a.documentInfo.categoryId - b.documentInfo.categoryId)
-      );
-      setPercentage(getPercentage(document.percentage, document.total));
+      setCompletedItems(completedDocs);
+      setPercentage(getPercentage(completedDocs.length, categoryDocs.length));
     }
-  }, [documents]);
+  }, [documents, currentTab]);
+
+  const renderTabItem = (index, title, isAlert) => (
+    <TouchableOpacity key={`category-${index}`} style={{ marginRight: 24 }} onPress={() => setCurrentTab(index)}>
+      <PreDepartureTab isAlert={isAlert} title={title} isSelected={currentTab === index} />
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={{ position: 'relative', height: '100%' }}>
@@ -69,21 +73,9 @@ const PreDepartureScreen = (props) => {
         </View>
         <View style={{ width: "100%", marginTop: 8, paddingVertical: 20, paddingLeft: 15 }}>
           <ScrollView style={{ width: "100%" }} horizontal={true} showsHorizontalScrollIndicator={false}>
-            <TouchableOpacity style={{ marginRight: 24 }} onPress={() => setCurrentTab("STCW National")}>
-              <PreDepartureTab isAlert={true} title={"STCW National"} currentTab={currentTab} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{ marginRight: 24 }} onPress={() => setCurrentTab("Flag State")}>
-              <PreDepartureTab isAlert={true} title={"Flag State"} currentTab={currentTab} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{ marginRight: 24 }} onPress={() => setCurrentTab("GDPR Documents")}>
-              <PreDepartureTab isAlert={false} title={"GDPR Documents"} currentTab={currentTab} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{ marginRight: 24 }} onPress={() => setCurrentTab("Training")}>
-              <PreDepartureTab isAlert={false} title={"Training"} currentTab={currentTab} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{ marginRight: 16 }} onPress={() => setCurrentTab("Technical")}>
-              <PreDepartureTab isAlert={false} title={"Technical"} currentTab={currentTab} />
-            </TouchableOpacity>
+            {CATEGORY_NAMES.map(category => (
+              renderTabItem(category.id, category.title, category.isAlert)
+            ))}
           </ScrollView>
         </View>
       </View>
@@ -101,10 +93,10 @@ const PreDepartureScreen = (props) => {
                 key={item.id}
                 id={item.id}
                 status={item.status}
-                categoryId={item.documentInfo.categoryId}
                 docName={item.documentInfo.description}
                 docNumber={item.documentInfo.documentNumber}
                 nation={item.documentInfo.nation}
+                followUp={item.documentInfo.followUp}
                 optional={item.documentInfo.optional}
                 issueDate={item.documentInfo.unlimited ? 'N/A' : moment(item.documentInfo.issueDate).format('DD.MM.YY')}
                 expiryDate={item.documentInfo.unlimited ? 'N/A' : moment(item.documentInfo.expiryDate).format('DD.MM.YY')}
@@ -122,10 +114,10 @@ const PreDepartureScreen = (props) => {
                 key={item.id}
                 id={item.id}
                 status={item.status}
-                categoryId={item.documentInfo.categoryId}
                 docName={item.documentInfo.description}
                 docNumber={item.documentInfo.documentNumber}
                 nation={item.documentInfo.nation}
+                followUp={item.documentInfo.followUp}
                 optional={item.documentInfo.optional}
                 issueDate={item.documentInfo.unlimited ? 'N/A' : moment(item.documentInfo.issueDate).format('DD.MM.YY')}
                 expiryDate={item.documentInfo.unlimited ? 'N/A' : moment(item.documentInfo.expiryDate).format('DD.MM.YY')}

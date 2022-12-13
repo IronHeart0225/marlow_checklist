@@ -7,18 +7,18 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 
 const PreDepartureTab = (props) => {
-  const { isAlert = false, title = '', currentTab } = props;
+  const { isAlert = false, title = '', isSelected = false } = props;
 
   return (
     <View style={{
       flexDirection: "row",
       alignItems: "center",
       paddingBottom: 5,
-      borderBottomWidth: currentTab == title ? 2 : 0,
+      borderBottomWidth: isSelected ? 2 : 0,
       borderBottomColor: "#005AA5"
     }}>
       {isAlert && <Icon style={{ marginRight: 4 }} name='alert-circle' color={"#CB3C47"} size={12} />}
-      <Text style={ currentTab == title ? styles.titleStyle : styles.unvisibleTitle}>{ title }</Text>
+      <Text style={ isSelected ? styles.titleStyle : styles.unvisibleTitle}>{ title }</Text>
     </View>
   )
 }
