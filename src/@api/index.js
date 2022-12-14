@@ -31,7 +31,7 @@ const createRandomDocument = () => {
 
 mock.onGet('/api/document_list').reply((config) => {
   let items = [];
-  Array.from({ length: 15 }).forEach(() => {
+  Array.from({ length: 40 }).forEach(() => {
     items.push(createRandomDocument());
   });
 
