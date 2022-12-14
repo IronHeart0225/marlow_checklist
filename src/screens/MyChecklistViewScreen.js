@@ -62,7 +62,7 @@ const MyChecklistViewScreen = (props) => {
 
   const renderItem = (item, idx) => (
     <ScrollView key={`item-${item.index}`} showsHorizontalScrollIndicator={false} horizontal>
-      <View style={[styles.itemView, { borderTopWidth: idx === 0 ? 1 : 0, width: Dimensions.get('window').width - 12 }]}>
+      <View style={[styles.itemView, { borderTopWidth: idx === 0 ? 1 : 0, width: Dimensions.get('window').width }]}>
         <View style={styles.docIcon}>
           <IonIcon name="document-text" color="#ffffff" size={10} />
         </View>

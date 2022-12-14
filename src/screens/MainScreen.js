@@ -82,17 +82,17 @@ const MainScreen = (props) => {
           <Text style={styles.sectionDescription}>Create your own personal checklist</Text>
           <View style={styles.sectionContent}>
             {myChecklist.length > 0 && myChecklist.map(item => (
-              <Pressable
+              <View
                 key={item.id}
-                onPress={() => editPersonalChecklist(item.id, item.title)}
               >
                 <PersonalCheckList
                   id={item.id}
                   title={item.title}
                   date={item.created}
                   lastItem={item.items ? item.items[item.items.length - 1].title : ''}
+                  onEditPersonalChecklist={() => editPersonalChecklist(item.id, item.title)}
                 />
-              </Pressable>
+              </View>
             ))}
           </View>
         </View>

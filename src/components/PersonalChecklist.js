@@ -6,14 +6,14 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { deletePersonalChecklist } from '../store/actions/myChecklistActions';
 
 const PersonalCheckList = (props) => {
-  const { id, title, date, lastItem, deletePersonalChecklist } = props;
+  const { id, title, date, lastItem, deletePersonalChecklist, onEditPersonalChecklist } = props;
 
   const handleDelete = () => {
     deletePersonalChecklist({ id });
   }
 
   return (
-    <ScrollView showsHorizontalScrollIndicator={false} horizontal>
+    <ScrollView showsHorizontalScrollIndicator={false} horizontal style={{ marginTop: 8 }}>
       <View style={[styles.checkListContainer, { width: Dimensions.get('window').width - 32 }]}>
         <View style={styles.align}>
           <Text style={styles.title}>{title}</Text>
@@ -24,7 +24,9 @@ const PersonalCheckList = (props) => {
             marginTop: 1,
           }]}>Last item added: {lastItem}</Text>
         </View>
+        <TouchableOpacity onPress={() => onEditPersonalChecklist()}>
         <FeatherIcon name="chevron-right" color={'#aaaaaa'} size={20} />
+        </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.swipeButton} onPress={handleDelete}>
         <MaterialIcon name="delete" color="#fff" size={24} />
@@ -41,7 +43,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 8,
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 80,
-    height: 88,
+    height: 80,
     backgroundColor: "#E6767F",
   },
   swipeText: {

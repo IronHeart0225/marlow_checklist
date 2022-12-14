@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from 'react-redux';
 import {
   View,
@@ -24,7 +24,12 @@ const PreDepartureItem = (props) => {
     issueDate,
     expiryDate,
     setPreDepartureDocumentStatus,
+    setShowConfirmModal,
+    setConfirmStatus,
+    setConfirmId,
   } = props;
+
+  const [submitStatus, setSubmitStatus] = useState('');
 
   const renderDocumentIcon = () => {
     if (status === 'Active') {
@@ -69,7 +74,15 @@ const PreDepartureItem = (props) => {
     return (
       <TouchableOpacity
         style={[styles.swipeButton, { backgroundColor: bgColor }]}
-        onPress={() => handleDocument(status)}
+        onPress={() => { 
+          if (status === 'Submitted') {
+            setConfirmId(id);
+            setConfirmStatus(status);
+            setShowConfirmModal(true);
+          } else {
+            handleDocument(status);
+          }
+        }}
       >
         <FeatherIcon name={icon} color={"#ffffff"} size={24} />
         <Text style={styles.swipeText}>{name}</Text>

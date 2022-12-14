@@ -17,14 +17,32 @@ import PreDepartureTab from '../components/PreDepartureTab';
 import PreDepartureItem from '../components/PreDepartureItem';
 import { getPercentage } from '../utils/percentage';
 import { CATEGORY_NAMES } from '../config/config';
+import ConfirmModal from '../components/ConfirmModal';
+import { setPreDepartureDocumentStatus } from '../store/actions/documentActions'
+import CheckItem from '../components/CheckItem';
 
 const PreDepartureScreen = (props) => {
-  const { navigation, documents } = props;
+  const { navigation, documents, setPreDepartureDocumentStatus } = props;
   const isDarkMode = useColorScheme() === 'dark';
   const [currentTab, setCurrentTab] = useState(0);
   const [percentage, setPercentage] = useState(0);
   const [pendingItems, setPendingItems] = useState([]);
   const [completedItems, setCompletedItems] = useState([]);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmId, setConfirmId] = useState(0);
+  const [confirmStatus, setConfirmStatus] = useState('');
+  const [showCheckItem, setShowCheckItem] = useState(false);
+
+  const handleDocument = async () => {
+    setShowCheckItem(true);
+    setTimeout(() => {
+      setShowCheckItem(false);
+    }, 1000);
+    const res = await setPreDepartureDocumentStatus(confirmId, confirmStatus);
+    if (res.code !== 200) {
+      console.log(res);
+    }
+  }
 
   useEffect(() => {
     if (documents.document?.items?.length > 0) {
@@ -100,6 +118,10 @@ const PreDepartureScreen = (props) => {
                 optional={item.documentInfo.optional}
                 issueDate={item.documentInfo.unlimited ? 'N/A' : moment(item.documentInfo.issueDate).format('DD.MM.YY')}
                 expiryDate={item.documentInfo.unlimited ? 'N/A' : moment(item.documentInfo.expiryDate).format('DD.MM.YY')}
+                setShowConfirmModal={setShowConfirmModal}
+                // handleDocument={(status) => handleDocument(item.id, status)}
+                setConfirmId={setConfirmId}
+                setConfirmStatus={setConfirmStatus}
               />
             ))}
           </View>
@@ -126,6 +148,14 @@ const PreDepartureScreen = (props) => {
           </View>
         </View>
       </ScrollView>
+      {
+        showConfirmModal &&
+        <ConfirmModal setShowModal={setShowConfirmModal} handleDocument={handleDocument} />
+      }
+      {
+        showCheckItem &&
+        <CheckItem />
+      }
     </SafeAreaView>
   )
 };
@@ -206,4 +236,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   documents: state.documents,
 });
-export default connect(mapStateToProps)(PreDepartureScreen);
+const mapDispatchToProps = {
+  setPreDepartureDocumentStatus
+}
+export default connect(mapStateToProps, mapDispatchToProps)(PreDepartureScreen);
