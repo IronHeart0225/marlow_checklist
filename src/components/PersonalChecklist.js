@@ -25,7 +25,7 @@ const PersonalCheckList = (props) => {
           }]}>Last item added: {lastItem}</Text>
         </View>
         <TouchableOpacity onPress={() => onEditPersonalChecklist()}>
-        <FeatherIcon name="chevron-right" color={'#aaaaaa'} size={20} />
+        <FeatherIcon name="chevron-right" color={'#aaaaaa'} size={20} style={{ marginLeft: 20, marginVertical: 20 }} />
         </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.swipeButton} onPress={handleDelete}>
