@@ -46,7 +46,7 @@ const MainScreen = (props) => {
   }
 
   const editPersonalChecklist = (id, title) => {
-    navigation.navigate('MyChecklistEdit', { id, title });
+    navigation.navigate('MyChecklistView', { id, title });
   }
 
   return (
@@ -87,9 +87,10 @@ const MainScreen = (props) => {
                 onPress={() => editPersonalChecklist(item.id, item.title)}
               >
                 <PersonalCheckList
+                  id={item.id}
                   title={item.title}
                   date={item.created}
-                  lastItem={item.items[item.items.length - 1].title}
+                  lastItem={item.items ? item.items[item.items.length - 1].title : ''}
                 />
               </Pressable>
             ))}

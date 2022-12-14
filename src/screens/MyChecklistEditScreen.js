@@ -15,7 +15,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { updatePersonalChecklist } from '../store/actions/myChecklistActions';
 
-const MyChecklistScreen = (props) => {
+const MyChecklistEditScreen = (props) => {
   const { route, navigation, myChecklist, updatePersonalChecklist } = props;
   const { id, title } = route.params;
   const isDarkMode = useColorScheme() === 'dark';
@@ -183,4 +183,4 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   updatePersonalChecklist,
 }
-export default connect(mapStateToProps, mapDispatchToProps)(MyChecklistScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(MyChecklistEditScreen);
